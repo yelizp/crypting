@@ -2,12 +2,16 @@ package com.example
 
 import com.example.common.ScheduledTask
 import com.example.model.{Asset, Customer, CustomerInvestment, CustomerMarket, Exchange}
-import com.example.facade.{MarketFacade,AlertsFacade, ConfigurationFacade, CryptingUpFacade, DashboardFacade, InfluxDBFacade, MongoDBFacade}
+import com.example.facade.{AlertsFacade, ConfigurationFacade, CryptingUpFacade, DashboardFacade, InfluxDBFacade, MarketFacade, MongoDBFacade}
+
+import java.util.Locale
 
 object CryptoAssetsMain {
   def main(args: Array[String]): Unit = {
     ConfigurationFacade.init()
-    createCustomerInfoAndPersist()
+    if(args.length > 0 && args(0).toLowerCase(Locale.ENGLISH).endsWith("createcustomer")) {
+      createCustomerInfoAndPersist()
+    }
 
     val poolPeriodInMinutes = ConfigurationFacade.getProperty("pool.period.in.minutes").toInt
     new ScheduledTask().run(MarketFacade.update, poolPeriodInMinutes)
@@ -28,11 +32,11 @@ object CryptoAssetsMain {
     )
 
     val customerInvestments = Seq[CustomerInvestment](
-      CustomerInvestment("yeliz","COINBASE","BTC", 10),
+      CustomerInvestment("yeliz","COINBASE","BTC", 1),
       CustomerInvestment("yeliz","COINBASE","ETH", 20),
-      CustomerInvestment("yeliz","COINBASE", "DOGE", 10),
+      CustomerInvestment("yeliz","COINBASE", "DOGE", 1000),
       CustomerInvestment("yeliz","BITFINEX", "IOT", 5),
-      CustomerInvestment("yeliz","KRAKEN", "LUNA", 30)
+      CustomerInvestment("yeliz","KRAKEN", "NANO", 30000)
     )
 
     val customer = Customer("yeliz","Yeliz Pehlivanoglu")

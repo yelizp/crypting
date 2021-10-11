@@ -20,11 +20,14 @@ object DashboardFacade {
 
     var first24h:BigDecimal = null
     var last:BigDecimal = null
-    var portfolio = ListBuffer[Portfolio]()
+    var portfolios = ListBuffer[Portfolio]()
+    var worstPerformant:Tuple2[Portfolio,BigDecimal] = null
+    var topPerformant:Tuple2[Portfolio,BigDecimal] = null
+    var portfolio:Portfolio = null
 
     customerInvestments.foreach(investment => {
-      first24h = tryGet(investment,first24hList)
-      last = tryGet(investment,lastList)
+      first24h = getOrDefault(investment,first24hList)
+      last = getOrDefault(investment,lastList)
 
       if(last != null && first24h != null) {
         val percentChange24h:BigDecimal = if(first24h != null) {
@@ -33,18 +36,44 @@ object DashboardFacade {
           BigDecimal(0)
         }
 
-        portfolio += Portfolio(investment.customer_id,
+        portfolio = Portfolio(investment.customer_id,
           investment.exchange_id,
           investment.base_asset,
+          false,
+          false,
           investment.lot,
           (last * investment.lot).bigDecimal,
+          last,
           percentChange24h)
+
+        if(topPerformant == null && percentChange24h > 0) {
+          topPerformant = Tuple2(portfolio, percentChange24h)
+        } else if(topPerformant != null && percentChange24h > topPerformant._2) {
+          topPerformant = Tuple2(portfolio, percentChange24h)
+        }
+
+        if(worstPerformant == null && percentChange24h < 0) {
+          worstPerformant = Tuple2(portfolio, percentChange24h)
+        } else if(worstPerformant != null && percentChange24h < worstPerformant._2) {
+          worstPerformant = Tuple2(portfolio, percentChange24h)
+        }
+
+        portfolios += portfolio
       }
     })
-    portfolio.toSeq
+
+    if(topPerformant != null) {
+      topPerformant._1.most_revaluated = true
+    }
+
+    if(worstPerformant != null) {
+      worstPerformant._1.most_devaluated = true
+    }
+
+    portfolios.toSeq
   }
 
-  def tryGet(investment:CustomerInvestment, results:Seq[FluxResult]) : BigDecimal = {
+  def getOrDefault(investment:CustomerInvestment, results:Seq[FluxResult]) : BigDecimal = {
     var value:BigDecimal = null
     if(investment !=null && results != null && results.size > 0) {
       val seq = results.filter(r => {r.asset_id == investment.base_asset && investment.exchange_id == investment.exchange_id})

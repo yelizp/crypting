@@ -11,16 +11,6 @@ object Test {
     System.exit(0)
   }
 
-  def poolCustomerPortfolioAndPersist():Unit = {
-    val customerPortfolios = MongoDBFacade.findAll[CustomerInvestment]()
-    InfluxDBFacade.bulkWriteInsert(customerPortfolios.map(_.toPoint()))
-  }
-
-  def poolCustomerMarketsAndPersist(): Unit = {
-    val customerMarkets = MongoDBFacade.findAll[CustomerMarket]()
-    InfluxDBFacade.bulkWriteInsert(customerMarkets.map(_.toPoint()))
-  }
-
   def getAllAssetsAndPersist() = {
     MongoDBFacade.dropCollection(classOf[Asset])
     val assets = CryptingUpFacade.getAllAssets()
