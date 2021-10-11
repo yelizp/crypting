@@ -1,0 +1,59 @@
+version: "3"
+services: 
+   grafana:
+      image: grafana/grafana
+      container_name: grafana
+      restart: always
+      ports: 
+         - 3000:3000
+      networks: 
+         - grafana_network
+      volumes:
+         - grafana_data:/var/lib/grafana
+      depends_on: 
+         - influxdb
+         - mongo
+
+   influxdb:
+      image: influxdb:latest
+      container_name: influxdb
+      restart: always
+      ports:
+         - 8086:8086
+      networks:
+         - grafana_network
+      volumes:
+         - influxdb_data:/var/lib/influxdb
+      environment:
+         - INFLUXDB_DB=grafana
+         - INFLUXDB_USER=grafana
+         - INFLUXDB_USER_PASSWORD=password
+         - INFLUXDB_ADMIN_ENABLED=true
+         - INFLUXDB_ADMIN_USER=admin
+         - INFLUXDB_ADMIN_PASSWORD=password
+
+   mongo:
+      image: mongo
+      restart: always
+      environment:
+         MONGO_INITDB_ROOT_USERNAME: root
+         MONGO_INITDB_ROOT_PASSWORD: example
+      ports:
+         - 27017:27017
+
+   mongo-express:
+      image: mongo-express
+      restart: always
+      ports:
+         - 8081:8081
+      environment:
+         ME_CONFIG_MONGODB_ADMINUSERNAME: root
+         ME_CONFIG_MONGODB_ADMINPASSWORD: example
+         ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/       
+
+networks:
+   grafana_network:
+volumes:
+   grafana_data:
+   influxdb_data:
+   mongo_data:
