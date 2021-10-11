@@ -1,5 +1,6 @@
 package com.example.model
 
+import com.example.common.DateTimeHelper
 import com.influxdb.client.domain.WritePrecision
 import com.influxdb.client.write.Point
 import org.mongodb.scala.bson.ObjectId
@@ -11,11 +12,10 @@ trait Alert { def toPoint() : Point }
 
 case class TenPercentLossAlert(_id:ObjectId, customer_id:String, exchange_id:String, asset_id:String, percentLoss:BigDecimal, duration:String) extends Alert {
   def toPoint() : Point = {
-    Point.measurement("alert")
+    Point.measurement(classOf[TenPercentLossAlert].getSimpleName.toLowerCase(Locale.ENGLISH))
       .addTag("customer_id",customer_id)
       .addTag("exchange_id",exchange_id)
       .addTag("base_asset",asset_id)
-      .addTag("alert_type",classOf[TenPercentLossAlert].getSimpleName.toLowerCase(Locale.ENGLISH))
       .addField("percentLoss",percentLoss.bigDecimal)
       .addField("since", duration)
       .time(System.currentTimeMillis(),WritePrecision.MS)
@@ -30,11 +30,10 @@ object TenPercentLossAlert {
 
 case class TargetPriceExceededAlert(_id:ObjectId, customer_id:String, exchange_id: String, asset_id:String, target_price:BigDecimal, current_price: BigDecimal) extends Alert {
   def toPoint() : Point = {
-    Point.measurement("alert")
+    Point.measurement(classOf[TargetPriceExceededAlert].getSimpleName.toLowerCase(Locale.ENGLISH))
       .addTag("customer_id",customer_id)
       .addTag("exchange_id",exchange_id)
       .addTag("base_asset",asset_id)
-      .addTag("alert_type",classOf[TargetPriceExceededAlert].getSimpleName.toLowerCase(Locale.ENGLISH))
       .addField("target_price",target_price.bigDecimal)
       .addField("current_price", current_price.bigDecimal)
       .time(System.currentTimeMillis(),WritePrecision.MS)
@@ -49,13 +48,12 @@ object TargetPriceExceededAlert {
 
 case class DevaluationAlert(_id:ObjectId, customer_id:String, exchange_id: String, asset_id: String, devalutationRate:BigDecimal, event_ts:Timestamp) extends Alert {
   def toPoint() : Point = {
-    Point.measurement("alert")
+    Point.measurement(classOf[DevaluationAlert].getSimpleName.toLowerCase(Locale.ENGLISH))
       .addTag("customer_id",customer_id)
       .addTag("exchange_id",exchange_id)
       .addTag("base_asset",asset_id)
-      .addTag("alert_type",classOf[DevaluationAlert].getSimpleName.toLowerCase(Locale.ENGLISH))
       .addField("devaluation_rate",devalutationRate.bigDecimal)
-      .addField("event_ts", event_ts.getTime)
+      .addField("event_ts", DateTimeHelper.asString(event_ts))
       .time(System.currentTimeMillis(),WritePrecision.MS)
   }
 }
@@ -68,13 +66,12 @@ object DevaluationAlert {
 
 case class RateOfChangeAlert(_id:ObjectId, customer_id:String, exchange_id: String, asset_id: String, rateOfChange:BigDecimal, event_ts:Timestamp) extends Alert {
   def toPoint() : Point = {
-    Point.measurement("alert")
+    Point.measurement(classOf[RateOfChangeAlert].getSimpleName.toLowerCase(Locale.ENGLISH))
       .addTag("customer_id",customer_id)
       .addTag("exchange_id",exchange_id)
       .addTag("base_asset",asset_id)
-      .addTag("alert_type",classOf[RateOfChangeAlert].getSimpleName.toLowerCase(Locale.ENGLISH))
       .addField("rate_of_change",rateOfChange.bigDecimal)
-      .addField("event_ts", event_ts.getTime)
+      .addField("event_ts", DateTimeHelper.asString(event_ts))
       .time(System.currentTimeMillis(),WritePrecision.MS)
   }
 }
@@ -87,15 +84,14 @@ object RateOfChangeAlert {
 
 case class FluctuationAlert(_id:ObjectId, customer_id:String, exchange_id:String, asset_id:String, rate:BigDecimal, min_value:BigDecimal, max_value:BigDecimal, event_ts:Timestamp) extends Alert {
   def toPoint() : Point = {
-    Point.measurement("alert")
-      .addTag("customer_id",exchange_id)
+    Point.measurement(classOf[FluctuationAlert].getSimpleName.toLowerCase(Locale.ENGLISH))
+      .addTag("customer_id",customer_id)
       .addTag("exchange_id",exchange_id)
       .addTag("base_asset",asset_id)
-      .addTag("alert_type",classOf[FluctuationAlert].getSimpleName.toLowerCase(Locale.ENGLISH))
       .addField("fluctuation_rate",rate.bigDecimal)
       .addField("min_value", min_value.bigDecimal)
       .addField("max_value", max_value.bigDecimal)
-      .addField("event_ts", event_ts.getTime)
+      .addField("event_ts", DateTimeHelper.asString(event_ts))
       .time(System.currentTimeMillis(),WritePrecision.MS)
   }
 }

@@ -64,9 +64,23 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1633975185908,
+  "iteration": 1633975185924,
   "links": [],
   "panels": [
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 16,
+      "panels": [],
+      "title": "Reporting Panel",
+      "type": "row"
+    },
     {
       "datasource": null,
       "description": "",
@@ -89,10 +103,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 12,
+        "h": 7,
         "w": 12,
         "x": 0,
-        "y": 0
+        "y": 1
       },
       "id": 4,
       "options": {
@@ -101,7 +115,7 @@
         ],
         "legend": {
           "displayMode": "table",
-          "placement": "bottom",
+          "placement": "right",
           "values": [
             "value"
           ]
@@ -120,7 +134,7 @@
       },
       "targets": [
         {
-          "query": "from(bucket: \"grafana\")\r\n  |> range(start: -2m, stop: now())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"portfolio\")\r\n  |> filter(fn: (r) => r[\"customer_id\"] == \"${customer}\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> drop(columns:[\"most_revaluated\",\"most_devaluated\", \"customer_id\"])",
+          "query": "from(bucket: \"grafana\")\r\n  |> range(start: -2m, stop: now())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"portfolio\")\r\n  |> filter(fn: (r) => r[\"customer_id\"] == \"${customer}\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> drop(columns:[\"most_revaluated\",\"most_devaluated\", \"customer_id\"])\r\n  |> group(columns:[\"asset_id\", \"exchange_id\"])\r\n  |> rename(columns: {_value: \"\"})",
           "refId": "A"
         }
       ],
@@ -180,10 +194,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 12,
+        "h": 7,
         "w": 12,
         "x": 12,
-        "y": 0
+        "y": 1
       },
       "id": 5,
       "options": {
@@ -192,7 +206,7 @@
             "last"
           ],
           "displayMode": "list",
-          "placement": "right"
+          "placement": "bottom"
         },
         "tooltip": {
           "mode": "single"
@@ -260,10 +274,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
+        "h": 7,
         "w": 12,
         "x": 0,
-        "y": 12
+        "y": 8
       },
       "id": 2,
       "options": {
@@ -340,10 +354,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
+        "h": 7,
         "w": 12,
         "x": 12,
-        "y": 12
+        "y": 8
       },
       "id": 8,
       "options": {
@@ -366,6 +380,82 @@
       ],
       "title": "Worst Performant Asset in Portfolio",
       "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 14,
+      "panels": [],
+      "title": "Alerts Panel",
+      "type": "row"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 183
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 11,
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "8.1.5",
+      "targets": [
+        {
+          "query": "from(bucket: \"grafana\")\r\n  |> range(start: -2m, stop: now())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"targetpriceexceededalert\" and r.customer_id == \"${customer}\" \r\n  and (r._field == \"target_price\" or r._field == \"current_price\"))\r\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> group(columns: [\"asset_id\"])\r\n  |> drop(columns: [\"_field\", \"_measurement\", \"customer_id\", \"_start\", \"_stop\"])\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "Target Price Exceeded Alert",
+      "type": "table"
     },
     {
       "datasource": null,
@@ -396,10 +486,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 24,
+        "h": 4,
+        "w": 12,
         "x": 0,
-        "y": 22
+        "y": 23
       },
       "id": 7,
       "options": {
@@ -408,11 +498,170 @@
       "pluginVersion": "8.1.5",
       "targets": [
         {
-          "query": "from(bucket: \"grafana\")\r\n  |> range(start: -2m, stop: now())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"alert\")\r\n    |> pivot(\r\n    rowKey:[\"_time\"],\r\n    columnKey: [\"alert_type\", \"exchange_id\", \"base_asset\", \"_field\"],\r\n    valueColumn: \"_value\"\r\n  )\r\n   ",
+          "query": "from(bucket: \"grafana\")\r\n  |> range(start: -2m, stop: now())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"devaluationalert\" and r.customer_id == \"${customer}\" and r._field == \"event_ts\")\r\n  |> group(columns: [\"asset_id\"])\r\n  |> rename(columns: {_value: \"event_ts\"})\r\n  |> drop(columns: [\"_field\", \"_measurement\", \"customer_id\", \"_start\", \"_stop\"])",
           "refId": "A"
         }
       ],
-      "title": "Alerts",
+      "title": "Devaluation Alert",
+      "type": "table"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 183
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 23
+      },
+      "id": 12,
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "8.1.5",
+      "targets": [
+        {
+          "query": "from(bucket: \"grafana\")\r\n  |> range(start: -2m, stop: now())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"rateofchangealert\" and r.customer_id == \"${customer}\" \r\n  and (r._field == \"rate_of_change\" or r._field == \"event_time\"))\r\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> group(columns: [\"asset_id\"])\r\n  |> drop(columns: [\"_field\", \"_measurement\", \"customer_id\", \"_start\", \"_stop\"])\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "Rate of Change of Assets on Loss Event Time",
+      "type": "table"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 27
+      },
+      "id": 9,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "8.1.5",
+      "targets": [
+        {
+          "query": "from(bucket: \"grafana\")\r\n  |> range(start: -2m, stop: now())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"fluctuationalert\" and r.customer_id == \"${customer}\" and r._field == \"event_ts\")\r\n  |> group(columns: [\"asset_id\"])\r\n  |> rename(columns: {_value: \"event_ts\"})\r\n  |> drop(columns: [\"_field\", \"_measurement\", \"customer_id\", \"_start\", \"_stop\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "Fluctuation Alert",
+      "type": "table"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 27
+      },
+      "id": 10,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "8.1.5",
+      "targets": [
+        {
+          "query": "from(bucket: \"grafana\")\r\n  |> range(start: -2m, stop: now())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"tenpercentlossalert\" and r.customer_id == \"${customer}\" and r._field == \"since\")\r\n  |> group(columns: [\"asset_id\"])\r\n  |> rename(columns: {_value: \"since\"})\r\n  |> drop(columns: [\"_field\", \"_measurement\", \"customer_id\", \"_start\", \"_stop\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "Ten Percent Loss Alert",
       "type": "table"
     }
   ],
@@ -532,5 +781,5 @@
   "timezone": "",
   "title": "CryptingUp",
   "uid": "rTLnI4v7k",
-  "version": 39
+  "version": 59
 }
