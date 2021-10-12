@@ -15,7 +15,7 @@ Create a new bucket called "grafana" with organization "none". Create a new auth
     User: grafana (as specified by the docker-compose.yml file)
     Password: password (as specified by the docker-compose.yml file)
     Organization: none
-    Token: provide the token you have generated at step 6.
+    Token: provide the token you have generated at step 3.
     Default Bucket: grafana
     
     Click the + icon in the side bar and import grafana_dashboard.json file provided with the project.    
