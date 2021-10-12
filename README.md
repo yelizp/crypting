@@ -9,6 +9,7 @@ Create a new bucket called "grafana" with organization "none". Create a new auth
 6. Run "mvn clean package" from command line under the project root path
 7. Change Use "run.bat" to start the application. The application will create a demo customer if you prove --createCustomer option on the initial run. 
 8. Type localhost:3000 in the browser and open Grafana. From the DataSources page create a new InfluxDB connection as:
+    Query Language: Flux
     url: http://influxdb:8086 
     Basic Auth checked
     User: grafana (as specified by the docker-compose.yml file)
