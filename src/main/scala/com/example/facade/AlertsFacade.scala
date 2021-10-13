@@ -93,8 +93,8 @@ object AlertsFacade {
       results.foreach(result => {
         alerts += RateOfChangeAlert(
           mostDevaluated._1.customer_id,
-          mostDevaluated._1.exchange_id,
-          mostDevaluated._1.base_asset,
+          result.exchange_id,
+          result.asset_id,
           result.value,
           result.start
         )

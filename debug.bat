@@ -1,4 +1,4 @@
-call mvn clean package
+@REM call mvn clean package
 set CWD=%cd%
 
 @REM docker-compose up -d
