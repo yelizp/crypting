@@ -64,7 +64,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1634108734943,
+  "iteration": 1634127834612,
   "links": [],
   "panels": [
     {
@@ -223,6 +223,7 @@
     },
     {
       "datasource": null,
+      "description": "Displays \"Data does not have a time field\" message when no asset in portfolio has value gain.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -298,11 +299,12 @@
           "refId": "A"
         }
       ],
-      "title": "Top Performant Asset in Portfolio",
+      "title": "Most Value Gained Asset in Portfolio in 24H",
       "type": "timeseries"
     },
     {
       "datasource": null,
+      "description": "Displays \"Data does not have a time field\" message when no asset in portfolio has price drop.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -337,6 +339,7 @@
             }
           },
           "mappings": [],
+          "noValue": "No asset devaluated in 24Hs",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -378,7 +381,7 @@
           "refId": "A"
         }
       ],
-      "title": "Worst Performant Asset in Portfolio",
+      "title": "Most Value Lost Asset in Portfolio in 24H",
       "type": "timeseries"
     },
     {
@@ -469,6 +472,7 @@
             "displayMode": "auto"
           },
           "mappings": [],
+          "noValue": "No asset in portfolio lost value in the last 24H.",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -781,5 +785,5 @@
   "timezone": "",
   "title": "CryptingUp",
   "uid": "rTLnI4v7k",
-  "version": 68
+  "version": 83
 }
