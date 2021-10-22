@@ -84,11 +84,12 @@ object AlertsFacade {
           mostDevaluated._1.exchange_id,
           mostDevaluated._1.base_asset,
           fluxResult.value,
-          fluxResult.start)
+          fluxResult.time)
       }
 
-      val start = DateTimeHelper.asString(new Timestamp(fluxResult.start.getTime - 3600000))
-      val end = DateTimeHelper.asString(fluxResult.start)
+//      val start = DateTimeHelper.asString(new Timestamp(fluxResult.time.getTime - 3600000))
+      val start = DateTimeHelper.asString(Timestamp.valueOf(fluxResult.time.toLocalDateTime().minusHours(1)))
+      val end = DateTimeHelper.asString(fluxResult.time)
       val results = InfluxDBFacade.getAverageRateOfChange(start,end,tags)
       results.foreach(result => {
         alerts += RateOfChangeAlert(
@@ -96,7 +97,7 @@ object AlertsFacade {
           result.exchange_id,
           result.asset_id,
           result.value,
-          result.start
+          result.time
         )
       })
     }
@@ -118,7 +119,7 @@ object AlertsFacade {
           mostFluctuated._2,
           mostFluctuated._3,
           mostFluctuated._4,
-          fluxResult.start)
+          fluxResult.time)
       }
     }
 

@@ -7,7 +7,7 @@ Create a new bucket called "grafana" with organization "none". Create a new auth
 4. Change the influx2.properties file under the resources directory and set the token you have generated.
 5. Type localhost:8081 in the browser and open MongoDB express UI. Create a new database called "crypto_assets" with username "crypto" and password "crypto"
 6. Run "mvn clean package" from command line under the project root path
-7. Change Use "run.bat" to start the application. The application will create a demo customer if you prove --createCustomer option on the initial run. 
+7. Use "run.bat" to start the application. The application will create a demo customer if you provide --createCustomer option on the initial run. 
 8. Type localhost:3000 in the browser and open Grafana. From the DataSources page create a new InfluxDB connection as:
     Name: InfluxDB (leave it as default as used by the Grafana dashboard)
     Query Language: Flux

@@ -6,6 +6,7 @@ import java.time.{Instant, ZoneId}
 
 object DateTimeHelper {
   val utcWithTimeZoneFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").withZone(ZoneId.of ( "UTC" ))
+  val localWithTimeZoneFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").withZone(ZoneId.systemDefault())
   def asTimestamp(value:String) : Timestamp = {
     var result:Timestamp = null
     if(value != null && value.length >= 19) {
